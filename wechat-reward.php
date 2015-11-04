@@ -45,7 +45,7 @@ class WechatReward
     public function add_pay($content)
     {
         $QRpic = get_option('wechat-reward-QR-pic');
-        $QRpic = $QRpic ? $QRpic : 'http://www.tantengvip.com/wp-content/uploads/2015/10/pay.jpg';
+        $QRpic = $QRpic ? $QRpic : 'http://www.tantengvip.com/wp-content/uploads/2015/11/626761280052462332.jpg';
         $pay = <<<PAY
         <div class="gave" >
             <a href="javascript:;" id="gave">打赏</a>
@@ -130,6 +130,9 @@ PAY;
             </table>
             <p class="submit"><input type="submit" value="保存更改" class="button button-primary" id="submit" name="submit"></p>
         </form>
+        <hr>
+        <p>如果你觉得这个插件不错，给我打赏吧！！微信扫一扫</p>
+        <p><img src="http://www.tantengvip.com/wp-content/uploads/2015/11/626761280052462332.jpg" alt="微信打赏二维码"> </p>
     </div>
 <?php
     }
