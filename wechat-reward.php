@@ -117,6 +117,7 @@ PAY;
             2.长按二维码，点击“保存图片”，即可保存图片到手机<br>
             3.将图片上传到电脑，可以通过微信传输助手传到电脑，或者其他方式将图片传到电脑<br>
             4.将二维码图片传到WordPress站点，在WordPress后台“多媒体”-"添加"，上传二维码，<font color="red">然后复制上传到服务器的二维码图片的url</font>
+            提示：建议把微信生成的二维码图片先进行裁剪再上传。
         </p>
         <form action="<?= admin_url( 'options-general.php?page=upload_wechat_QR' ) ?>" name="settings-WR" method="post">
             <table class="form-table">
