@@ -1,14 +1,14 @@
 <?php
 /**
- * @package Wechat-reward
+ * @package Wechat-reward 微信打赏
  * @version 1.0
  */
 /*
 Plugin Name: 微信打赏
-Plugin URI: https://github.com/tanteng/wechat-reward
-Description: 在文章末尾添加微信扫一扫二维码，读者可以用微信当面付功能给你打赏。Github:https://github.com/tanteng/wechat-reward
+Plugin URI: https://github.com/wordpress-plugins-tanteng/wechat-reward
+Description: 在文章末尾添加微信打赏功能，如果读者觉得这篇文章对他有用，可以用微信给你打赏赞助。
 Author: tán téng
-Version: 1.0
+Version: 1.1
 Author URI: http://www.tantengvip.com
 */
 
@@ -18,7 +18,7 @@ class WechatReward
 {
     public function __Construct()
     {
-        //TODO
+        $this->run();
     }
 
     /**
@@ -33,7 +33,7 @@ class WechatReward
         wp_register_style('wechat-reward', plugins_url( '/assets/wechat-reward.css', __FILE__ ));
 
         //确保在底部加载css样式，覆盖主题的样式
-        add_action('wp_footer',[$this,'add_css']);
+        add_action('wp_footer',array($this,'add_css'));
     }
 
     public function add_css()
@@ -57,10 +57,10 @@ class WechatReward
 PAY;
         $pay = strtr(
             $pay,
-            [
+            array(
                 '[wechat-qrpic]' => $QRpic,
                 '[wechat-ico]' => plugins_url( '/assets/ico-wechat.jpg', __FILE__ )
-            ]
+            )
         );
         //本插件只在文章页和非手机访问有效
         if(is_single() && !wp_is_mobile()){
@@ -73,7 +73,7 @@ PAY;
     //前台入口
     public function run()
     {
-        add_filter( 'the_content', [$this,'add_pay']);
+        add_filter( 'the_content', array($this,'add_pay'));
     }
 
     //设置link
@@ -88,14 +88,14 @@ PAY;
 
     //微信打赏设置菜单
     function WR_add_pages() {
-        add_options_page( '微信打赏', '微信打赏', 'manage_options', 'upload_wechat_QR', [$this,'upload_wechat_QR']);
+        add_options_page( '微信打赏', '微信打赏', 'manage_options', 'upload_wechat_QR', array($this,'upload_wechat_QR'));
     }
 
     //调用钩子设置link
     public function settings()
     {
-        add_filter( 'plugin_action_links', [$this,'wechat_reward_plugin_setting'], 10, 2 );
-        add_action('admin_menu', [$this,'WR_add_pages']);
+        add_filter( 'plugin_action_links', array($this,'wechat_reward_plugin_setting'), 10, 2 );
+        add_action('admin_menu', array($this,'WR_add_pages'));
     }
 
     //管理页面
@@ -116,8 +116,8 @@ PAY;
             1.打开微信，点击右上角“+”号，点击“收钱”，即可进入微信收钱页面<br>
             2.长按二维码，点击“保存图片”，即可保存图片到手机<br>
             3.将图片上传到电脑，可以通过微信传输助手传到电脑，或者其他方式将图片传到电脑<br>
-            4.将二维码图片传到WordPress站点，在WordPress后台“多媒体”-"添加"，上传二维码，<font color="red">然后复制上传到服务器的二维码图片的url</font>
-            提示：建议把微信生成的二维码图片先进行裁剪再上传。
+            4.将二维码图片传到WordPress站点，在WordPress后台“多媒体”-"添加"，上传二维码，<span style="color: red; ">然后复制上传到服务器的二维码图片的url</span><br>
+            提示：建议把微信生成的二维码图片先进行裁剪再上传。有任何疑问请发邮件到tanteng@gmail.com，将第一时间回复，谢谢！
         </p>
         <form action="<?= admin_url( 'options-general.php?page=upload_wechat_QR' ) ?>" name="settings-WR" method="post">
             <table class="form-table">
@@ -145,7 +145,6 @@ PAY;
 }
 
 $instance = new WechatReward();
-$instance->run();
 
 if(is_admin()){
     //插件设置页面
