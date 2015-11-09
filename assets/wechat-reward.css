@@ -31,6 +31,7 @@
     padding: 20px;
     position: absolute;
     width: 180px;
+    z-index: 999;
 }
 .gave a {
     background: #f06363 none repeat scroll 0 0;

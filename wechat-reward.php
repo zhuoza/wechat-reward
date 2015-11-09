@@ -1,14 +1,14 @@
 <?php
 /**
- * @package Wechat-reward 微信打赏
- * @version 1.0
+ * @package Wechat Reward(微信打赏)
+ * @version 1.3
  */
 /*
 Plugin Name: 微信打赏
 Plugin URI: https://github.com/wordpress-plugins-tanteng/wechat-reward
-Description: 在文章末尾添加微信打赏功能，如果读者觉得这篇文章对他有用，可以用微信给你打赏赞助。
+Description: 在文章末尾添加微信打赏功能，如果读者觉得这篇文章对他有用，可以用微信扫一扫打赏赞助。
 Author: tán téng
-Version: 1.1
+Version: 1.3
 Author URI: http://www.tantengvip.com
 */
 
@@ -18,13 +18,14 @@ class WechatReward
 {
     public function __Construct()
     {
-        $this->run();
+        add_filter('the_content', array($this,'add_pay'));
+        add_action('admin_menu', array($this,'WR_add_pages'));
     }
 
     /**
      * 加载js和css
      */
-    public function setting()
+    public function load()
     {
         //在jqeury之后加载js文件
         wp_register_script('wechat-reward', plugins_url( '/assets/wechat-reward.js', __FILE__ ), array('jquery'));
@@ -64,16 +65,10 @@ PAY;
         );
         //本插件只在文章页和非手机访问有效
         if(is_single() && !wp_is_mobile()){
-            $this->setting();
+            $this->load();
             $content .= $pay;
         }
         return $content;
-    }
-
-    //前台入口
-    public function run()
-    {
-        add_filter( 'the_content', array($this,'add_pay'));
     }
 
     //设置link
@@ -89,13 +84,7 @@ PAY;
     //微信打赏设置菜单
     function WR_add_pages() {
         add_options_page( '微信打赏', '微信打赏', 'manage_options', 'upload_wechat_QR', array($this,'upload_wechat_QR'));
-    }
-
-    //调用钩子设置link
-    public function settings()
-    {
         add_filter( 'plugin_action_links', array($this,'wechat_reward_plugin_setting'), 10, 2 );
-        add_action('admin_menu', array($this,'WR_add_pages'));
     }
 
     //管理页面
@@ -140,13 +129,8 @@ PAY;
     //保存成功提示
     public function upload_success()
     {
-        echo '<div class="updated"><p>更新成功！打开一篇文章页看看效果吧~~</p></div>';
+        echo '<div class="updated "><p>更新成功！打开一篇文章页看看效果吧~~</p></div>';
     }
 }
 
-$instance = new WechatReward();
-
-if(is_admin()){
-    //插件设置页面
-    $instance->settings();
-}
+new WechatReward;
