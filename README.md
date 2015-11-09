@@ -1,5 +1,6 @@
 # wechat-reward
 微信打赏WordPress插件
 
-这是一个微信打赏WordPress小插件，可以为文章页面增加打赏按钮功能，当鼠标移上去会出现一个微信收款二维码，通过扫码可以向文章
-作者支付任意金额作为打赏，支持在后台设置自定义微信收款二维码图片。
+这是一个微信打赏WordPress小插件，在文章末尾添加微信打赏功能，如果读者觉得这篇文章对他有用，可以用微信扫一扫打赏赞助。
+
+插件页面：http://www.tantengvip.com/2015/11/wechat-rewrd-wordpress-plugin/
