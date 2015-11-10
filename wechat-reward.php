@@ -1,14 +1,14 @@
 <?php
 /**
  * @package Wechat Reward(微信打赏)
- * @version 1.3
+ * @version 1.6
  */
 /*
 Plugin Name: 微信打赏
 Plugin URI: https://github.com/wordpress-plugins-tanteng/wechat-reward
 Description: 在文章末尾添加微信打赏功能，如果读者觉得这篇文章对他有用，可以用微信扫一扫打赏赞助。
 Author: tán téng
-Version: 1.3
+Version: 1.6
 Author URI: http://www.tantengvip.com
 */
 
@@ -20,6 +20,7 @@ class WechatReward
     {
         add_filter('the_content', array($this,'add_pay'));
         add_action('admin_menu', array($this,'WR_add_pages'));
+        add_filter('plugin_action_links', array($this,'wechat_reward_plugin_setting'), 10, 2);
     }
 
     /**
@@ -46,7 +47,7 @@ class WechatReward
     public function add_pay($content)
     {
         $QRpic = get_option('wechat-reward-QR-pic');
-        $QRpic = $QRpic ? $QRpic : 'http://www.tantengvip.com/wp-content/uploads/2015/11/626761280052462332.jpg';
+        $QRpic = $QRpic ? $QRpic : plugins_url( '/assets/wxpay.jpg', __FILE__ );
         $pay = <<<PAY
         <div class="gave" >
             <a href="javascript:;" id="gave">打赏</a>
@@ -84,7 +85,6 @@ PAY;
     //微信打赏设置菜单
     function WR_add_pages() {
         add_options_page( '微信打赏', '微信打赏', 'manage_options', 'upload_wechat_QR', array($this,'upload_wechat_QR'));
-        add_filter( 'plugin_action_links', array($this,'wechat_reward_plugin_setting'), 10, 2 );
     }
 
     //管理页面
@@ -121,7 +121,7 @@ PAY;
         </form>
         <hr>
         <p>如果你觉得这个插件不错，给我打赏吧！！微信扫一扫</p>
-        <p><img src="http://www.tantengvip.com/wp-content/uploads/2015/11/626761280052462332.jpg" alt="微信打赏二维码"> </p>
+        <p><img src="<?= plugins_url( '/assets/wxpay.jpg', __FILE__ ) ?>" alt="微信打赏二维码"> </p>
     </div>
 <?php
     }
@@ -134,3 +134,55 @@ PAY;
 }
 
 new WechatReward;
+
+//微信打赏挂件
+class WR_Widget extends WP_Widget {
+    public function __construct() {
+        parent::__construct(
+            'WRWIDGET', // Base ID
+            '微信打赏挂件', // Name
+            array( 'description' => '给博客增加微信打赏挂件' )
+        );
+    }
+
+    //前台显示
+    public function widget( $args, $instance ) {
+        echo $args['before_widget'];
+        if ( ! empty( $instance['title'] ) ) {
+            echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ). $args['after_title'];
+        }
+        $QRpic = get_option('wechat-reward-QR-pic');
+        ?>
+        <div class="wrqr">
+            <img src="<?= $QRpic ?>" alt="微信打赏二维码"><br>
+            <span>微信扫一扫</span>
+        </div>
+        <?php
+        echo $args['after_widget'];
+    }
+
+    //后台小工具设置
+    public function form( $instance ) {
+        $title = ! empty( $instance['title'] ) ? $instance['title'] : '';
+        ?>
+        <p>
+            <label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?></label>
+            <input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>">
+        </p>
+        <?php
+    }
+
+    //更新设置
+    public function update( $new_instance, $old_instance ) {
+        $instance = array();
+        $instance['title'] = ( ! empty( $new_instance['title'] ) ) ? strip_tags( $new_instance['title'] ) : '';
+
+        return $instance;
+    }
+}
+
+//注册微信打赏挂件
+function register_WR_widget() {
+    register_widget( 'WR_Widget' );
+}
+add_action( 'widgets_init', 'register_WR_widget' );
